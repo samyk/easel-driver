@@ -1,7 +1,7 @@
 # easel-driver
 **UNOFFICIAL** [Easel](https://www.inventables.com/technologies/easel) driver for Linux (and Mac/Windows) + ability to run Easel from a remote computer (providing remote access to CNC mill).
 
-Can be used with X-Carve, Carvey, and likely other GRBL based controllers (though it might void your [warranty](http://carvey-instructions.inventables.com/warranty/CarveyLimitedWarranty11.18.16.pdf))
+Can be used with X-Carve, Carvey, and other GRBL-based controllers (though it might void your [warranty](http://carvey-instructions.inventables.com/warranty/CarveyLimitedWarranty11.18.16.pdf))
 
 # Description
 I use this to run my CNC mill connected to a Raspberry Pi, and then access it remotely from a non-Linux machine across the network. This is convenient if you don't want to have your CNC mill connected directly to your computer via USB or if you want to run your mill on Linux and still use Inventables' [Easel](https://www.inventables.com/technologies/easel).
