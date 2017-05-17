@@ -1,17 +1,18 @@
 # easel-driver
-**UNOFFICIAL** Easel driver for Linux (and Mac/Windows) + ability to run Easel from a remote computer (providing remote access to CNC mill)
+**UNOFFICIAL** [Easel](https://www.inventables.com/technologies/easel) driver for Linux (and Mac/Windows) + ability to run Easel from a remote computer (providing remote access to CNC mill).
+
+Can be used with X-Carve, Carvey, and likely other GRBL based controllers (though it might void your [warranty](http://carvey-instructions.inventables.com/warranty/CarveyLimitedWarranty11.18.16.pdf))
 
 # Description
-I use this to run my CNC mill connected to a Raspberry Pi, and then access it remotely from a non-Linux machine across the network. This is convenient if you don't want to have your CNC mill connected directly to your computer via USB or if you want to run your mill on Linux and still use Inventables' Easel.
+I use this to run my CNC mill connected to a Raspberry Pi, and then access it remotely from a non-Linux machine across the network. This is convenient if you don't want to have your CNC mill connected directly to your computer via USB or if you want to run your mill on Linux and still use Inventables' [Easel](https://www.inventables.com/technologies/easel).
 
 The following commands will get the Easel driver running on Linux (tested on Raspberry Pi 3). Additionally, I've added port forwarding instructions if you wish to have your local computer port forward to your Easel machine (Easel's web interface will connect to the port forwarding mechanism on your computer which will forward to the computer your mill is actually connected to).
 
 # Commands
 ```sh
-# Create temp dir to work in
-EASELRAND=`date +%N`
-mkdir easel-driver-$EASELRAND
-cd easel-driver-$EASELRAND
+# Create dir to work in
+mkdir easel-driver
+cd easel-driver
 
 # Install wget to grab official Easel Driver
 sudo apt-get install -y wget
@@ -42,17 +43,19 @@ sudo apt-get install -y nodejs
 # Install avrdude for firmware upgrades
 sudo apt-get install -y avrdude
 
-# Install the necessary node modules
-npm install
-
 # Install screen to run in background
 sudo apt-get install -y screen
 
-# Profit
-screen -dm node iris.js
+# Install the necessary node modules
+npm install
+
+# Profit (run driver in the background)
+screen -dmS easel node iris.js
 ```
 
 Easel is now running on ports 1338 (WebSocket) and 1438 (TLS WebSocket).
+
+You can see the console output by running `screen -r easel` and detach from the screen process by hitting `Ctrl+A` followed by `d`.
 
 # Remote Port Forwarding
 If you want to run your CNC on a separate computer than the one you run Easel from, you can port forward from the machine you want to run Easel from. On my Mac, to port forward, I run:
@@ -66,12 +69,12 @@ sudo ncat --sh-exec "ncat raspberrypi.local 1438" -l 1438 --keep-open
 ```
 
 # Todo
-The firmware upgrade won't work because `lib/firmware_uploader.js` has a `PLATFORMS` variable that only defines Darwin and Windows_NT. You should be able to add the following code after `var PLATFORMS = {` to make it work, though I have not tested this.
+The firmware upgrade won't work because `lib/firmware_uploader.js` has a `PLATFORMS` object that only defines Darwin (Mac) and Windows. You should be able to add the following code after `var PLATFORMS = {` to make it work, though I have not tested this. Please let me know if you have success!
 
 ```javascript
   'Linux': {
     root: '/usr/bin/avrdude',
     executable: '/usr/bin/avrdude',
-    config: 'etc/avrdude.conf'
+    config: 'avrdude.conf'
   },
 ```
