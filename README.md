@@ -70,6 +70,15 @@ Easel is now running on ports 1338 (WebSocket) and 1438 (TLS WebSocket).
 
 You can see the console output by running `screen -r easel` and detach from the screen process by hitting `Ctrl+A` followed by `d`.
 
+# Start on boot
+To start the driver on bootup, run:
+
+```sh
+(crontab -l ; echo "@reboot cd ~/easel-driver && /usr/bin/screen -dmS easel node iris.js") | crontab
+```
+
+Ensure that iris.js is actually in ~/easel-driver, and if not, make sure to change the `cd` directory. You must cd into the directory and not just run iris.js from the directory as iris.js uses relative paths.
+
 # Remote Port Forwarding
 If you want to run your CNC on a separate computer than the one you run Easel from, you can port forward from the machine you want to run Easel from. On my Mac, to port forward, I run:
 
