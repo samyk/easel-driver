@@ -34,6 +34,11 @@ zcat Payload | cpio -idv
 cp -r lib iris.js package.json ssl arduino-flash-tools/tools_darwin/avrdude/etc/avrdude.conf ../
 cd ..
 
+# Move avrdude.conf into lib/etc as that's where the easel driver will look
+mkdir lib/etc
+mv avrdude.conf lib/etc
+ln -s lib/etc etc
+
 # Install nodejs v6 repo in apt
 curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 
@@ -68,13 +73,16 @@ sudo ncat --sh-exec "ncat raspberrypi.local 1338" -l 1338 --keep-open
 sudo ncat --sh-exec "ncat raspberrypi.local 1438" -l 1438 --keep-open
 ```
 
-# Todo
-The firmware upgrade won't work because `lib/firmware_uploader.js` has a `PLATFORMS` object that only defines Darwin (Mac) and Windows. You should be able to add the following code after `var PLATFORMS = {` to make it work, though I have not tested this. Please let me know if you have success!
+# Firmware Upgrade Support
+
+You can add support for upgrading firmware by modifying `lib/firmware_uploader.js` and adding the following lines directly after the `var PLATFORMS = {` line (I've tested this successfully!):
 
 ```javascript
   'Linux': {
     root: '/usr/bin/avrdude',
     executable: '/usr/bin/avrdude',
-    config: 'avrdude.conf'
+    config: path.join(__dirname, 'etc/avrdude.conf')
   },
 ```
+
+Make sure to restart the easel driver if you're already running it!

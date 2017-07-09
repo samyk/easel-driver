@@ -22,6 +22,11 @@ zcat Payload | cpio -idv
 cp -r lib iris.js package.json ssl arduino-flash-tools/tools_darwin/avrdude/etc/avrdude.conf ../
 cd ..
 
+# Move avrdude.conf into lib/etc as that's where Iris will look
+mkdir lib/etc
+mv avrdude.conf lib/etc
+ln -s lib/etc etc
+
 # Install nodejs v6 repo in apt
 curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 
