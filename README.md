@@ -92,7 +92,7 @@ sudo ncat --sh-exec "ncat raspberrypi.local 1438" -l 1438 --keep-open
 
 # Firmware Upgrade Support
 
-Firmware upgrade support has been added for Linux, so firmware upgrades to your mill will work through Easel. It does this by adding the following code to `lib/firmware_uploader.js` directly after the `var PLATFORMS = {` line:
+I've added and tested firmware upgrade support for Linux, so firmware upgrades to your mill will work through Easel, even remotely over your network or Internet. The commands above do this automatically by adding the following code to `lib/firmware_uploader.js` directly after the `var PLATFORMS = {` line:
 
 ```javascript
   'Linux': {
