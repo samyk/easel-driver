@@ -20,17 +20,17 @@ cd easel-driver &&
 # Install wget to grab official Easel Driver
 sudo apt-get install -y wget &&
 
-# Download official Easel Driver 0.3.7 for Mac (which we'll extract necessary components from)
-wget -O - http://easel.inventables.com/downloads | perl -ne 'print $1 if /href="([^"]+EaselDriver-0.3.7.pkg[^"]*)/' | xargs wget -O EaselDriver-0.3.7.pkg &&
+# Download official Easel Driver 0.3.10 for Mac (which we'll extract necessary components from)
+wget -O - http://easel.inventables.com/downloads | perl -ne 'print $1 if /href="([^"]+EaselDriver-0.3.10.pkg[^"]*)/' | xargs wget -O EaselDriver-0.3.10.pkg &&
 
 # Install p7zip to unpack xar archive
 sudo apt-get install -y p7zip-full &&
 
 # Unpack Easel Driver
-7z x EaselDriver-0.3.7.pkg &&
+7z x EaselDriver-0.3.10.pkg &&
 
 # Unpack the primary Easel files
-cd IrisLib-0.3.7.pkg &&
+cd IrisLib-0.3.10.pkg &&
 zcat Payload | cpio -idv &&
 
 # Grab the necessary files
@@ -101,3 +101,31 @@ I've added and tested firmware upgrade support for Linux, so firmware upgrades t
     config: path.join(__dirname, 'etc/avrdude.conf')
   },
 ```
+
+# Auto enumeration of the right COM/USB Port 
+The easel auto enumeration of the right com/usb Port doesn't work on linux, don't know why. You can simply add your Port under lib/serial_port_controller.js. To find YOUR Port inspect the /dev folder on your system for new devices/files after plugging in your arduino. 
+
+Before: 
+
+    currentComName = comName;
+    var thisPort = new SerialPort(comName, {
+      baudrate: config.baud,
+      parser: SerialPort.parsers.readline(config.separator),
+      errorCallback: function(err){
+        logger.log("ERROR: " + err, Debugger.logger.RED);
+        return;
+      }
+    });
+
+
+After: 
+
+    currentComName = comName;
+    var thisPort = new SerialPort('/dev/ttyUSB0', {          <<<<<<<------ Adjust here!
+      baudrate: config.baud,
+      parser: SerialPort.parsers.readline(config.separator),
+      errorCallback: function(err){
+        logger.log("ERROR: " + err, Debugger.logger.RED);
+        return;
+      }
+    });
