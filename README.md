@@ -80,14 +80,18 @@ To start the driver on bootup, run:
 Ensure that iris.js is actually in ~/easel-driver, and if not, make sure to change the `cd` directory. You must cd into the directory and not just run iris.js from the directory as iris.js uses relative paths.
 
 # Remote Port Forwarding
-If you want to run your CNC on a separate computer than the one you run Easel from, you can port forward from the machine you want to run Easel from. On my Mac, to port forward, I run:
+If you want to run your CNC on a separate computer than the one you run Easel from, you can port forward from the machine you want to run Easel from. Easel uses ports 1338 for websocket and 1438 for TLS websockets, however the interface doesn't seem to use 1438 just yet.
 
+**macOS/Linux**
 ```sh
 # Port forward local 1338 to remote host raspberrypi.local:1338
 sudo ncat --sh-exec "ncat raspberrypi.local 1338" -l 1338 --keep-open
+```
 
-# I don't think this next forwarder is necessary (yet) as it's for TLS WebSockets
-sudo ncat --sh-exec "ncat raspberrypi.local 1438" -l 1438 --keep-open
+**Windows**
+```sh
+# you may need to change "raspberrypi.local" to the IP address of the machine running easel-driver
+netsh interface portproxy add v4tov4 listenport=1338 listenaddress=0.0.0.0 connectport=1338 connectaddress=raspberrypi.local
 ```
 
 # Firmware Upgrade Support
