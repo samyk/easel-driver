@@ -8,17 +8,17 @@ cd easel-driver &&
 # Install wget to grab official Easel Driver
 sudo apt-get install -y wget &&
 
-# Download official Easel Driver 0.3.10 for Mac (which we'll extract necessary components from)
-wget -O - http://easel.inventables.com/downloads | perl -ne 'print $1 if /href="([^"]+EaselDriver-0.3.10.pkg[^"]*)/' | xargs wget -O EaselDriver-0.3.10.pkg &&
+# Download latest Easel Driver for Mac (which we'll extract necessary components from)
+wget -O - http://easel.inventables.com/downloads | perl -ne 'print $1 if /href="([^"]+EaselDriver\S+\.pkg[^"]*)/' | xargs wget -O EaselDriver.pkg &&
 
 # Install p7zip to unpack xar archive
 sudo apt-get install -y p7zip-full &&
 
 # Unpack Easel Driver
-7z x EaselDriver-0.3.10.pkg &&
+7z x EaselDriver.pkg &&
 
 # Unpack the primary Easel files
-cd IrisLib-0.3.10.pkg &&
+cd IrisLib*.pkg &&
 zcat Payload | cpio -idv &&
 
 # Grab the necessary files
