@@ -33,11 +33,13 @@ ln -s lib/etc etc &&
 # Modify the firmware uploader to support Linux
 perl -pi -e 'if (/var PLATFORMS/) { $x = chr(39); print; $_ = "\t${x}Linux${x}: {\n\t\troot: ${x}/usr/bin/avrdude${x},\n\t\texecutable: ${x}/usr/bin/avrdude${x},\n\t\tconfig: path.join(__dirname, ${x}etc/avrdude.conf${x})\n\t},\n"; }' lib/firmware_uploader.js &&
 
-# Install nodejs v6 repo in apt
-curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - &&
+# Install nodejs using nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash - &&
 
-# Install nodejs v6
-sudo apt-get install -y nodejs &&
+source ~/.bashrc &&
+
+# Install nodejs lts
+nvm install --lts && nvm use lts/dubnium &&  # LTS 10.x
 
 # Install avrdude for firmware upgrades
 sudo apt-get install -y avrdude &&
