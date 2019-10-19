@@ -48,10 +48,14 @@ perl -pi -e 'if (/var PLATFORMS/) { $x = chr(39); print; $_ = "\t${x}Linux${x}: 
 # Install nodejs using nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash - &&
 
+export NVM_DIR="$HOME/.nvm" &&
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" && # This loads nvm bash_completion
+
 source ~/.bashrc &&
 
 # Install nodejs lts
-nvm install --lts
+nvm install --lts && nvm use lts/dubnium &&  # LTS 10.x
 
 # Install avrdude for firmware upgrades
 sudo apt-get install -y avrdude &&
