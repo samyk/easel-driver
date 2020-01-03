@@ -22,7 +22,7 @@ cd IrisLib*.pkg &&
 zcat Payload | cpio -idv &&
 
 # Grab the necessary files
-cp -r lib iris.js package.json ssl arduino-flash-tools/tools_darwin/avrdude/etc/avrdude.conf ../ &&
+cp -r lib iris.js package.json ssl avrdude/etc/avrdude.conf ../ &&
 cd .. &&
 
 # Move avrdude.conf into lib/etc as that's where the easel driver will look
@@ -40,8 +40,11 @@ export NVM_DIR="$HOME/.nvm" &&
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" && # This loads nvm bash_completion
 
+source ~/.bashrc &&
+
 # Install nodejs lts
-nvm install --lts && nvm use lts/dubnium &&  # LTS 10.x
+nvm install --lts &&
+nvm use 'lts/*' && # LTS 10.x
 
 # Install avrdude for firmware upgrades
 sudo apt-get install -y avrdude &&
