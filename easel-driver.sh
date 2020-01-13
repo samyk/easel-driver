@@ -39,8 +39,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash 
 export NVM_DIR="$HOME/.nvm" &&
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" && # This loads nvm bash_completion
-
-source ~/.bashrc &&
+. ~/.bashrc &&
 
 # Install nodejs lts
 nvm install --lts &&
@@ -54,8 +53,25 @@ sudo apt-get install -y screen &&
 
 # Install the necessary node modules
 npm install &&
+echo "\n\n\n" &&
+
+# Allow installing on reboot
+while true; do
+  read -p "Almost done! Do you want Easel driver to run on startup (will install to crontab) [yn]: " yn
+  case $yn in
+    [Yy]* ) ((crontab -l 2>>/dev/null | egrep -v '^@reboot.*easel node iris\.js') | echo "@reboot source ~/.bashrc ; cd ~/easel-driver && /usr/bin/screen -L -dmS easel node iris.js") | crontab ; echo '\nAdded to crontab (`crontab -l` to view)'; break;;
+    [Nn]* ) break;;
+    * ) echo "Please answer yes/no";;
+  esac
+done &&
 
 # Profit (run driver in the background)
-screen -dmS easel node iris.js
+screen -L -dmS easel node iris.js &&
+
+# Output the screen log so we can see if it was successful
+sleep 3 &&
+echo "\n\n\n" &&
+tail screenlog.0 &&
 
 # Run `screen -r easel` to access the driver, and Ctrl+A (Cmd+A on macOS) followed by 'd' to detach)
+echo '\n\nDone! Easel driver running in background. Run `screen -r` to bring it to foreground.'
