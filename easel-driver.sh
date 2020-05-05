@@ -1,3 +1,5 @@
+#!/bin/sh -x
+
 # Move previous out of way if exists
 if [ -e 'easel-driver' ]; then mv easel-driver easel-driver.bak.`date +%s`; fi &&
 
@@ -48,7 +50,8 @@ echo "\n\n\n" &&
 
 # Allow installing on reboot
 while true; do
-  echo -n "Almost done! Do you want Easel driver to run on startup (will install to crontab) [yn]: "
+  echo "Almost done! Do you want Easel driver to run on startup (will install to crontab) [yn]: "
+  # It's important to use `read` like this so that we can be piped into `| sh`
   read yn <&1
   case $yn in
     [Yy]* ) ((crontab -l 2>>/dev/null | egrep -v '^@reboot.*easel node iris\.js') | echo "@reboot source ~/.bashrc ; cd ~/easel-driver && /usr/bin/screen -L -dmS easel node iris.js") | crontab ; echo '\nAdded to crontab (`crontab -l` to view)'; break;;
