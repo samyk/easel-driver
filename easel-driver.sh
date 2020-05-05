@@ -5,14 +5,11 @@ if [ -e 'easel-driver' ]; then mv easel-driver easel-driver.bak.`date +%s`; fi &
 mkdir -p easel-driver &&
 cd easel-driver &&
 
-# Install wget to grab official Easel Driver
-sudo apt-get install -y wget &&
-
 # Download latest Easel Driver for Mac (which we'll extract necessary components from)
-wget -O - http://easel.inventables.com/downloads | perl -ne 'print $1 if /href="([^"]+EaselDriver\S+\.pkg[^"]*)/' | xargs wget -O EaselDriver.pkg &&
+curl -L https://easel.inventables.com/downloads | perl -ne 'print $1 if /href="([^"]+EaselDriver\S+\.pkg[^"]*)/' | xargs curl -o EaselDriver.pkg &&
 
-# Install p7zip to unpack xar archive
-sudo apt-get install -y p7zip-full &&
+# Install p7zip to unpack xar archive, avrdude for firmware upgrades, screen to run in background
+sudo apt-get install -y p7zip-full avrdude screen &&
 
 # Unpack Easel Driver
 7z x EaselDriver.pkg &&
@@ -45,19 +42,14 @@ export NVM_DIR="$HOME/.nvm" &&
 nvm install --lts &&
 nvm use 'lts/*' && # LTS 10.x
 
-# Install avrdude for firmware upgrades
-sudo apt-get install -y avrdude &&
-
-# Install screen to run in background
-sudo apt-get install -y screen &&
-
 # Install the necessary node modules
 npm install &&
 echo "\n\n\n" &&
 
 # Allow installing on reboot
 while true; do
-  read -p "Almost done! Do you want Easel driver to run on startup (will install to crontab) [yn]: " yn
+  echo -n "Almost done! Do you want Easel driver to run on startup (will install to crontab) [yn]: "
+  read yn <&1
   case $yn in
     [Yy]* ) ((crontab -l 2>>/dev/null | egrep -v '^@reboot.*easel node iris\.js') | echo "@reboot source ~/.bashrc ; cd ~/easel-driver && /usr/bin/screen -L -dmS easel node iris.js") | crontab ; echo '\nAdded to crontab (`crontab -l` to view)'; break;;
     [Nn]* ) break;;

@@ -3,6 +3,14 @@
 
 Can be used with X-Carve, Carvey, and other GRBL-based controllers (though it might void your [warranty](http://carvey-instructions.inventables.com/warranty/CarveyLimitedWarranty11.18.16.pdf))
 
+# Quick Start
+Easiest way to get everything installed and running is to run the following:
+`curl https://raw.githubusercontent.com/samyk/easel-driver/master/easel-driver.sh | sh`
+
+Easel is now running on ports 1338 (WebSocket) and 1438 (TLS WebSocket).
+
+You can see the console output by running `screen -r easel` and detach from the screen process by hitting `Ctrl+A` followed by `d`.
+
 # Description
 I use this to run my CNC mill connected to a Raspberry Pi, and then access it remotely from a non-Linux machine across the network. This is convenient if you don't want to have your CNC mill connected directly to your computer via USB or if you want to run your mill on Linux and still use Inventables' [Easel](https://www.inventables.com/technologies/easel).
 
@@ -10,90 +18,6 @@ The following commands will get the Easel driver running on Linux (tested on Ras
 
 Note that while Inventables does now offer a [Linux driver](https://easel.inventables.com/sender_versions/legacy), it's _only_ for X86 processors and not ARM processors, like the Raspberry Pi.
 
-# Commands
-```sh
-# Move previous out of way if exists
-if [ -e 'easel-driver' ]; then mv easel-driver easel-driver.bak.`date +%s`; fi &&
-
-# Create dir to work in
-mkdir -p easel-driver &&
-cd easel-driver &&
-
-# Install wget to grab official Easel Driver
-sudo apt-get install -y wget &&
-
-# Download latest Easel Driver for Mac (which we'll extract necessary components from)
-wget -O - http://easel.inventables.com/downloads | perl -ne 'print $1 if /href="([^"]+EaselDriver\S+\.pkg[^"]*)/' | xargs wget -O EaselDriver.pkg &&
-
-# Install p7zip to unpack xar archive
-sudo apt-get install -y p7zip-full &&
-
-# Unpack Easel Driver
-7z x EaselDriver.pkg &&
-
-# Unpack the primary Easel files
-cd IrisLib*.pkg &&
-zcat Payload | cpio -idv &&
-
-# Grab the necessary files
-cp -r lib iris.js package.json ssl avrdude/etc/avrdude.conf ../ &&
-cd .. &&
-
-# Move avrdude.conf into lib/etc as that's where the easel driver will look
-mkdir lib/etc &&
-mv avrdude.conf lib/etc &&
-ln -s lib/etc etc &&
-
-# Modify the firmware uploader to support Linux
-perl -pi -e 'if (/var PLATFORMS/) { $x = chr(39); print; $_ = "\t${x}Linux${x}: {\n\t\troot: ${x}/usr/bin/avrdude${x},\n\t\texecutable: ${x}/usr/bin/avrdude${x},\n\t\tconfig: path.join(__dirname, ${x}etc/avrdude.conf${x})\n\t},\n"; }' lib/firmware_uploader.js &&
-
-# Install nodejs using nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash - &&
-
-export NVM_DIR="$HOME/.nvm" &&
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" && # This loads nvm bash_completion
-. ~/.bashrc &&
-
-# Install nodejs lts
-nvm install --lts &&
-nvm use 'lts/*' && # LTS 10.x
-
-# Install avrdude for firmware upgrades
-sudo apt-get install -y avrdude &&
-
-# Install screen to run in background
-sudo apt-get install -y screen &&
-
-# Install the necessary node modules
-npm install &&
-echo "\n\n\n" &&
-
-# Allow installing on reboot
-while true; do
-  read -p "Almost done! Do you want Easel driver to run on startup (will install to crontab) [yn]: " yn
-  case $yn in
-    [Yy]* ) ((crontab -l 2>>/dev/null | egrep -v '^@reboot.*easel node iris\.js') | echo "@reboot source ~/.bashrc ; cd ~/easel-driver && /usr/bin/screen -L -dmS easel node iris.js") | crontab ; echo '\nAdded to crontab (`crontab -l` to view)'; break;;
-    [Nn]* ) break;;
-    * ) echo "Please answer yes/no";;
-  esac
-done &&
-
-# Profit (run driver in the background)
-screen -L -dmS easel node iris.js &&
-
-# Output the screen log so we can see if it was successful
-sleep 3 &&
-echo "\n\n\n" &&
-tail screenlog.0 &&
-
-# Run `screen -r easel` to access the driver, and Ctrl+A (Cmd+A on macOS) followed by 'd' to detach)
-echo '\n\nDone! Easel driver running in background. Run `screen -r` to bring it to foreground.'
-```
-
-Easel is now running on ports 1338 (WebSocket) and 1438 (TLS WebSocket).
-
-You can see the console output by running `screen -r easel` and detach from the screen process by hitting `Ctrl+A` followed by `d`.
 
 # Start on boot
 
@@ -122,19 +46,7 @@ netsh interface portproxy add v4tov4 listenport=1438 listenaddress=0.0.0.0 conne
 netsh interface portproxy add v4tov4 listenport=1338 listenaddress=0.0.0.0 connectport=1338 connectaddress=raspberrypi.local
 ```
 
-# Firmware Upgrade Support
-
-I've added and tested firmware upgrade support for Linux, so firmware upgrades to your mill will work through Easel, even remotely over your network or Internet. The commands above do this automatically by adding the following code to `lib/firmware_uploader.js` directly after the `var PLATFORMS = {` line:
-
-```javascript
-  'Linux': {
-    root: '/usr/bin/avrdude',
-    executable: '/usr/bin/avrdude',
-    config: path.join(__dirname, 'etc/avrdude.conf')
-  },
-```
-
-# Auto enumeration of the right COM/USB Port 
+# Auto enumeration of the right COM/USB port
 
 Some users have mentioned they had make the change below, while others have not. I have not had to do this on Carvey as of 2020/05/05, but you may need to.
 
