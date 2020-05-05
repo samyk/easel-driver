@@ -104,17 +104,19 @@ The shell script asks you if you want to run on boot, and if so, it will add it 
 Ensure that iris.js is actually in ~/easel-driver, and if not, make sure to change the `cd` directory. You must cd into the directory and not just run iris.js from the directory as iris.js uses relative paths.
 
 # Remote Port Forwarding
-If you want to run your CNC on a separate computer than the one you run Easel from, you can port forward from the machine you want to run Easel from. Easel uses ports 1338 for websocket and 1438 for TLS websockets, however the interface doesn't seem to use 1438 just yet.
+If you want to run your CNC on a separate computer than the one you run Easel from, you can port forward from the machine you want to run Easel from. Easel uses ports 1338 for websocket and 1438 for TLS websockets, however the interface used to use 1338 exclusively but now seems to use 1438 exclusively.
 
 **macOS/Linux**
 ```sh
-# Port forward local 1338 to remote host raspberrypi.local:1338
-sudo ncat --sh-exec "ncat raspberrypi.local 1338" -l 1338 --keep-open
+# Port forward local 1438 to remote host raspberrypi.local:1438
+sudo ncat --sh-exec "ncat raspberrypi.local 1438" -l 1438 --keep-open &
+sudo ncat --sh-exec "ncat raspberrypi.local 1438" -l 1438 --keep-open &
 ```
 
 **Windows**
 ```sh
 # you may need to change "raspberrypi.local" to the IP address of the machine running easel-driver
+netsh interface portproxy add v4tov4 listenport=1438 listenaddress=0.0.0.0 connectport=1438 connectaddress=raspberrypi.local
 netsh interface portproxy add v4tov4 listenport=1338 listenaddress=0.0.0.0 connectport=1338 connectaddress=raspberrypi.local
 ```
 
@@ -131,10 +133,13 @@ I've added and tested firmware upgrade support for Linux, so firmware upgrades t
 ```
 
 # Auto enumeration of the right COM/USB Port 
-The easel auto enumeration of the right com/usb Port doesn't work on linux, don't know why. You can simply add your Port under lib/serial_port_controller.js. To find YOUR Port inspect the /dev folder on your system for new devices/files after plugging in your arduino. 
 
-Before: 
+Some users have mentioned they had make the change below, while others have not. I have not had to do this on Carvey as of 2020/05/05, but you may need to.
 
+The Easel auto enumeration of the right com/USB port doesn't work for everyone on Linux. You can simply add your Port under ~/easel-driver/lib/serial_port_controller.js. To find YOUR port inspect the /dev folder on your system for new devices/files after plugging in your Arduino/controller, `ls /dev/tty*`
+
+Before:
+```
     currentComName = comName;
     var thisPort = new SerialPort(comName, {
       baudrate: config.baud,
@@ -144,12 +149,12 @@ Before:
         return;
       }
     });
+```
 
-
-After: 
-
+After:
+```
     currentComName = comName;
-    var thisPort = new SerialPort('/dev/ttyUSB0', {          <<<<<<<------ Adjust here!
+    var thisPort = new SerialPort('/dev/ttyUSB0', {  //    <<<<<<<------ Adjust here!
       baudrate: config.baud,
       parser: SerialPort.parsers.readline(config.separator),
       errorCallback: function(err){
@@ -157,3 +162,4 @@ After:
         return;
       }
     });
+```
