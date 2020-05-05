@@ -8,7 +8,7 @@ Can be used with X-Carve, Carvey, and other GRBL-based controllers (though it mi
 
 Easiest way to get everything installed and running is to run the following:
 
-`curl https://raw.githubusercontent.com/samyk/easel-driver/master/easel-driver.sh | sh`
+`curl https://raw.githubusercontent.com/samyk/easel-driver/master/easel-driver.sh | sh -x`
 
 Easel is now running on ports 1338 (WebSocket) and 1438 (TLS WebSocket).
 
