@@ -1,8 +1,8 @@
 # easel-driver
 
-**UNOFFICIAL** [Easel](https://www.inventables.com/technologies/easel) driver for Linux (including Raspberry Pi/ARM processors), Mac, Windows + ability to run Easel from a remote computer (providing remote access to CNC mill).
+**UNOFFICIAL** [Easel](https://www.inventables.com/technologies/easel) driver for Linux, Mac, Windows, Raspberry Pi (x86/x86-64/ARM) + ability to run Easel from a remote computer (providing remote access to CNC mill).
 
-Can be used with X-Carve, Carvey, and other GRBL-based controllers (though it might void your [warranty](http://carvey-instructions.inventables.com/warranty/CarveyLimitedWarranty11.18.16.pdf))
+Can be used with X-Carve, Carvey, and other GRBL-based controllers including Arduino, FTDI, and CH340-based controllers (though it might void your [warranty](http://carvey-instructions.inventables.com/warranty/CarveyLimitedWarranty11.18.16.pdf))
 
 ## Quick Start
 
@@ -33,16 +33,14 @@ If you want to run your CNC on a separate computer than the one you run Easel fr
 # ncat is installed via nmap, I personally installed nmap via MacPorts by running
 sudo port install nmap
 
-# Now port forward local 1438/1338 to remote host raspberrypi.local:1438/1338
-sudo ncat --sh-exec "ncat raspberrypi.local 1438" -l 1438 --keep-open &
-sudo ncat --sh-exec "ncat raspberrypi.local 1338" -l 1338 --keep-open &
+# Now port forward local 1438 to remote host raspberrypi.local:1438 - may need to adjust raspberrypi.local to your controller's IP/hostname
+ncat --sh-exec "ncat raspberrypi.local 1438" -l 1438 --keep-open
 ```
 
 **Windows**
 ```sh
 # you may need to change "raspberrypi.local" to the IP address of the machine running easel-driver
 netsh interface portproxy add v4tov4 listenport=1438 listenaddress=0.0.0.0 connectport=1438 connectaddress=raspberrypi.local
-netsh interface portproxy add v4tov4 listenport=1338 listenaddress=0.0.0.0 connectport=1338 connectaddress=raspberrypi.local
 ```
 
 ## Start on boot
@@ -54,35 +52,3 @@ The shell script asks you if you want to run on boot, and if so, it will add it 
 ```
 
 Ensure that iris.js is actually in ~/easel-driver, and if not, make sure to change the `cd` directory. You must cd into the directory and not just run iris.js from the directory as iris.js uses relative paths.
-
-## Auto enumeration of the right COM/USB port
-
-Some users have mentioned they had make the change below, while others have not. I have not had to do this on Carvey as of 2020/05/05, but you may need to.
-
-The Easel auto enumeration of the right com/USB port doesn't work for everyone on Linux. You can simply add your Port under ~/easel-driver/lib/serial_port_controller.js. To find YOUR port inspect the /dev folder on your system for new devices/files after plugging in your Arduino/controller, `ls /dev/tty*`
-
-Before:
-```javascript
-    currentComName = comName;
-    var thisPort = new SerialPort(comName, {
-      baudrate: config.baud,
-      parser: SerialPort.parsers.readline(config.separator),
-      errorCallback: function(err){
-        logger.log("ERROR: " + err, Debugger.logger.RED);
-        return;
-      }
-    });
-```
-
-After:
-```javascript
-    currentComName = comName;
-    var thisPort = new SerialPort('/dev/ttyUSB0', {  //   <<<<<<<------ Adjust here!
-      baudrate: config.baud,
-      parser: SerialPort.parsers.readline(config.separator),
-      errorCallback: function(err){
-        logger.log("ERROR: " + err, Debugger.logger.RED);
-        return;
-      }
-    });
-```
