@@ -44,8 +44,11 @@ EOF
 }' lib/serial_port_controller.js &&
 
 # Install nodejs using nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash - &&
+# The installation script will clone the nvm repository from Github to the ~/.nvm directory 
+# and add the nvm path to your Bash profile.
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash - &&
 
+# Rerun Profile script to start NVM
 export NVM_DIR="$HOME/.nvm" &&
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" && # This loads nvm bash_completion
@@ -53,7 +56,7 @@ export NVM_DIR="$HOME/.nvm" &&
 
 # Install nodejs lts
 nvm install --lts &&
-nvm use 'lts/*' && # LTS 10.x
+nvm use 'lts/*' && # LTS v12.x
 
 # Install the necessary node modules
 npm install &&
