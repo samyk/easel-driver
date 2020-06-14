@@ -58,11 +58,6 @@ export NVM_DIR="$HOME/.nvm" &&
 nvm install --lts &&
 nvm use 'lts/*' && # LTS v12.x
 
-# Output Node Related Version Info
-echo "[NPM] ============"; which npm; npm -v;
-echo "[NVM] ============"; nvm --version; nvm ls;
-echo "[NODE] ============"; which node; node -v &&
-
 # Install the necessary node modules
 npm install &&
 echo "\n\n\n" &&
