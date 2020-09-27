@@ -32,7 +32,7 @@ ln -s lib/etc etc &&
 # Modify the firmware uploader to support Linux
 perl -pi -e 'if (/var PLATFORMS/) { $x = chr(39); print; $_ = "\t${x}Linux${x}: {\n\t\troot: ${x}/usr/bin/avrdude${x},\n\t\texecutable: ${x}/usr/bin/avrdude${x},\n\t\tconfig: path.join(__dirname, ${x}etc/avrdude.conf${x})\n\t},\n"; }' lib/firmware_uploader.js &&
 
-# Modify the serial port code to support CH340-based serial devices
+# Modify the serial port code to support CH340/CH341-based serial devices by spoofing an FTDI chip
 perl -pi -e 'if (/callback\(ports\)/) { print << "EOF"
         ports.forEach(function(part, i) {
           if (this[i].manufacturer === "1a86")
@@ -49,10 +49,23 @@ EOF
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash - &&
 
 # Rerun Profile script to start NVM
-export NVM_DIR="$HOME/.nvm" &&
+if [ ! -e "$NVM_DIR" ]; then
+        if [ -e "$HOME/.nvm" ]; then
+                export NVM_DIR="$HOME/.nvm"
+        else
+                if [ -e "$HOME/.config/nvm" ]; then
+                        export NVM_DIR="$HOME/.config/nvm"
+                else
+                        echo "Can't find NVM directory!"
+                fi
+        fi
+fi &&
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" && # This loads nvm bash_completion
 . ~/.bashrc &&
+
+# Ensure screen also respects the bashrc
+echo 'shell -$SHELL' >> ~/.screenrc &&
 
 # Install nodejs lts
 nvm install --lts &&
@@ -62,13 +75,17 @@ nvm use 'lts/*' && # LTS v12.x
 npm install &&
 echo "\n\n\n" &&
 
+# Create a startup script
+#echo '. ~/.bashrc ; . ~/.nvm/nvm.sh ; nvm use' \'lts/*\' '; cd ~/easel-driver ; node iris.js' > run.sh &&
+#chmod 755 run.sh &&
+
 # Allow installing on reboot
 while true; do
   echo "Almost done! Do you want Easel driver to run on startup (will install to crontab) [yn]: "
   # It's important to use `read` like this so that we can be piped into `| sh`
   read yn <&1
   case $yn in
-    [Yy]* ) ((crontab -l 2>>/dev/null | egrep -v '^@reboot.*easel node iris\.js') | echo "@reboot source ~/.bashrc ; cd ~/easel-driver && /usr/bin/screen -L -dmS easel node iris.js") | crontab ; echo '\nAdded to crontab (`crontab -l` to view)'; break;;
+    [Yy]* ) ((crontab -l 2>>/dev/null | egrep -v '^@reboot.*easel node iris\.js') | echo "@reboot . ~/.bashrc ; cd ~/easel-driver && /usr/bin/screen -L -dmS easel node iris.js") | crontab ; echo '\nAdded to crontab (`crontab -l` to view)'; break;;
     [Nn]* ) break;;
     * ) echo "Please answer yes/no";;
   esac
