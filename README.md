@@ -2,7 +2,7 @@
 
 **UNOFFICIAL** [Easel](https://www.inventables.com/technologies/easel) driver for Linux, Mac, Windows, Raspberry Pi (x86/x86-64/ARM) + ability to run Easel from a remote computer (providing remote access to CNC mill).
 
-Can be used with X-Carve, Carvey, and other GRBL-based controllers including Arduino, FTDI, and CH340-based controllers (though it might void your [warranty](http://carvey-instructions.inventables.com/warranty/CarveyLimitedWarranty11.18.16.pdf))
+Can be used with X-Carve, Carvey, and other GRBL-based controllers including Arduino, FTDI, and CH340/CH341-based controllers (though it might void your [warranty](http://carvey-instructions.inventables.com/warranty/CarveyLimitedWarranty11.18.16.pdf))
 
 ## Quick Start
 
