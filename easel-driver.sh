@@ -67,16 +67,16 @@ fi &&
 # Ensure screen also respects the bashrc
 echo 'shell -$SHELL' >> ~/.screenrc &&
 
-# Install nodejs lts
-nvm install --lts &&
-nvm use 'lts/*' && # LTS v12.x
+# install nodejs v12
+nvm install v12.19.0 &&
+nvm use v12.19.0 &&
 
 # Install the necessary node modules
 npm install &&
 echo "\n\n\n" &&
 
 # Create a startup script
-#echo '. ~/.bashrc ; . ~/.nvm/nvm.sh ; nvm use' \'lts/*\' '; cd ~/easel-driver ; node iris.js' > run.sh &&
+#echo '. ~/.bashrc ; . ~/.nvm/nvm.sh ; nvm use' \'v12.19.0\' '; cd ~/easel-driver ; node iris.js' > run.sh &&
 #chmod 755 run.sh &&
 
 # Allow installing on reboot
