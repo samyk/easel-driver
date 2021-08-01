@@ -93,7 +93,7 @@ create_start_script() {
 EOF
 }
 
-# Install service, chooses correct init system
+# Installs system specific service
 install_service() {
         if [ "${SYSD}" = "1" ]; then
         touch ${workDir}/EaselDriver.service
