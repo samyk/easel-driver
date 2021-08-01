@@ -93,6 +93,37 @@ create_start_script() {
 EOF
 }
 
+install_service() {
+        if [ "${SYSD}" = "1" ]; then
+        touch ${workDir}/EaselDriver.service
+        cat <<EOF > ${workDir}/EaselDriver.service
+[Unit]
+Description=EaselDriver systemd service unit file.
+
+[Service]
+ExecStart=/bin/bash ${workDir}/start-easel-driver.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+        sudo mv ${workDir}/EaselDriver.service /etc/systemd/system/
+        sudo systemctl daemon-reload
+        sudo systemctl enable EaselDriver.service
+        else
+        touch ${workDir}/EaselDriver.service
+        cat <<EOF > ${workDir}/EaselDriver.service
+[Unit]
+Description=EaselDriver init.d service unit file.
+
+[Service]
+ExecStart=/bin/bash ${workDir}/start-easel-driver.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+        sudo mv ${workDir}/EaselDriver.service /etc/systemd/system/
+fi
+}
 
 while true; do
   echo "Almost done! Do you want Easel driver to run on startup (will install system service) [yn]: "
