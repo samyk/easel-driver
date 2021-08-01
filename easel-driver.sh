@@ -80,9 +80,18 @@ echo "\n\n\n" &&
 #chmod 755 run.sh &&
 
 # Allow installing on reboot
-check_init() { pidof /sbin/init && SYSD="0" || SYSD="1"; }
+check_init() { pidof /sbin/init && SYSD="0" || SYSD="1"; } # Return 0 if init.d and 1 if systemd
 
-
+# Create simple start script and save in easel driver folder
+create_start_script() { 
+        workDir=$(pwd)
+        touch ${workDir}/start-easel-driver.sh
+        chmod +x ${workDir}/start-easel-driver.sh
+        cat <<EOF > start-easel-driver.sh
+        #!/bin/bash
+        cd ${workDir} && /usr/bin/screen -dmS easel node iris.js
+EOF
+}
 
 
 while true; do
