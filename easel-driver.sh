@@ -80,8 +80,13 @@ echo "\n\n\n" &&
 #chmod 755 run.sh &&
 
 # Allow installing on reboot
+check_init() { pidof /sbin/init && SYSD="0" || SYSD="1"; }
+
+
+
+
 while true; do
-  echo "Almost done! Do you want Easel driver to run on startup (will install to crontab) [yn]: "
+  echo "Almost done! Do you want Easel driver to run on startup (will install system service) [yn]: "
   # It's important to use `read` like this so that we can be piped into `| sh`
   read yn <&1
   case $yn in
