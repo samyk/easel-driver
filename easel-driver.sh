@@ -84,45 +84,45 @@ check_init() { pidof /sbin/init && SYSD="0" || SYSD="1"; } # Return 0 if init.d 
 
 # Create simple start script and save in easel driver folder
 create_start_script() { 
-        workDir=$(pwd)
-        touch ${workDir}/start-easel-driver.sh
-        chmod +x ${workDir}/start-easel-driver.sh
-        cat <<EOF > start-easel-driver.sh
+        driverdir=$(pwd)
+        touch ${driverdir}/run.sh
+        chmod +x ${driverdir}/run.sh
+        cat <<EOF > run.sh
         #!/bin/bash
-        cd ${workDir} && /usr/bin/screen -dmS easel node iris.js
+        cd ${driverdir} && /usr/bin/screen -dmS easel node iris.js
 EOF
 }
 
 # Installs system specific service
 install_service() {
         if [ "${SYSD}" = "1" ]; then
-        touch ${workDir}/EaselDriver.service
-        cat <<EOF > ${workDir}/EaselDriver.service
+        touch ${driverdir}/EaselDriver.service
+        cat <<EOF > ${driverdir}/EaselDriver.service
 [Unit]
 Description=EaselDriver systemd service unit file.
 
 [Service]
-ExecStart=/bin/bash ${workDir}/start-easel-driver.sh
+ExecStart=/bin/bash ${driverdir}/run.sh
 
 [Install]
 WantedBy=multi-user.target
 EOF
-        sudo mv ${workDir}/EaselDriver.service /etc/systemd/system/
+        sudo mv ${driverdir}/EaselDriver.service /etc/systemd/system/
         sudo systemctl daemon-reload
         sudo systemctl enable EaselDriver.service
         else
-        touch ${workDir}/EaselDriver.service
-        cat <<EOF > ${workDir}/EaselDriver.service
+        touch ${driverdir}/EaselDriver.service
+        cat <<EOF > ${driverdir}/EaselDriver.service
 [Unit]
 Description=EaselDriver init.d service unit file.
 
 [Service]
-ExecStart=/bin/bash ${workDir}/start-easel-driver.sh
+ExecStart=/bin/bash ${driverdir}/run.sh
 
 [Install]
 WantedBy=multi-user.target
 EOF
-        sudo mv ${workDir}/EaselDriver.service /etc/systemd/system/
+        sudo mv ${driverdir}/EaselDriver.service /etc/systemd/system/
 fi
 }
 
