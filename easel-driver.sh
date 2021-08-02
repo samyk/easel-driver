@@ -110,19 +110,41 @@ EOF
         sudo mv ${driverdir}/EaselDriver.service /etc/systemd/system/
         sudo systemctl daemon-reload
         sudo systemctl enable EaselDriver.service
-        else
-        touch ${driverdir}/EaselDriver.service
-        cat <<EOF > ${driverdir}/EaselDriver.service
-[Unit]
-Description=EaselDriver init.d service unit file.
+        else # if init.d create start/stop script enable with chkconfig
+        touch ${driverdir}/EaselDriver
+        cat <<EOF > ${driverdir}/EaselDriver
+#!/bin/bash
+# chkconfig: 2345 20 80
+# description: Serv
 
-[Service]
-ExecStart=/bin/bash ${driverdir}/run.sh
+# Source function library.
+. /etc/init.d/functions
 
-[Install]
-WantedBy=multi-user.target
+start() {
+    cd ${driverdir}
+    /usr/bin/screen -dmS easel node iris.js
+}
+
+stop() {
+    /usr/bin/screen -X -S "easel" quit
+}
+
+case "$1" in 
+    start)
+       start
+       ;;
+    stop)
+       stop
+       ;;
+    *)
+       echo "Usage: $0 {start|stop}"
+esac
+
+exit 0 
 EOF
-        sudo mv ${driverdir}/EaselDriver.service /etc/systemd/system/
+        sudo mv ${driverdir}/EaselDriver /etc/init.d/
+        sudo chkconfig --add EaselDriver
+        sudo chkconfig --level 2345 EaselDriver on
 fi
 }
 
@@ -131,7 +153,11 @@ while true; do
   # It's important to use `read` like this so that we can be piped into `| sh`
   read yn <&1
   case $yn in
-    [Yy]* ) ((crontab -l 2>>/dev/null | egrep -v '^@reboot.*easel node iris\.js') | echo "@reboot . ~/.bashrc ; cd ~/easel-driver && /usr/bin/screen -L -dmS easel node iris.js") | crontab ; echo '\nAdded to crontab (`crontab -l` to view)'; break;;
+    [Yy]* ) 
+        check_init
+        create_start_script
+        install_service
+        break;;
     [Nn]* ) break;;
     * ) echo "Please answer yes/no";;
   esac
