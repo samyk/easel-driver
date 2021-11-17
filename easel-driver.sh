@@ -80,7 +80,15 @@ echo "\n\n\n" &&
 #chmod 755 run.sh &&
 
 # Allow installing on reboot
-check_init() { pidof /sbin/init && SYSD="0" || SYSD="1"; } # Return 0 if init.d and 1 if systemd
+check_init() { 
+        # Per sd_booted(8), the way to check if systemd is running is to check if this directory exists.
+        if [ -d /run/systemd/system/ ]; then 
+                # set if systemd is in use on this system.
+                SYSD=1
+        else
+                SYSD=0
+        fi
+}
 
 # Create simple start script and save in easel driver folder
 create_start_script() { 
@@ -88,8 +96,14 @@ create_start_script() {
         touch ${driverdir}/run.sh
         chmod +x ${driverdir}/run.sh
         cat <<EOF > run.sh
-        #!/bin/bash
-        cd ${driverdir} && /usr/bin/screen -dmS easel node iris.js
+#!/bin/bash
+. ~/.bashrc
+. ~/.nvm/nvm.sh
+nvm use 'v12.19.0'
+cd ${driverdir}
+
+echo "Starting easel-driver"
+node iris.js
 EOF
 }
 
@@ -102,7 +116,10 @@ install_service() {
 Description=EaselDriver systemd service unit file.
 
 [Service]
-ExecStart=/bin/bash ${driverdir}/run.sh
+User=$(whoami)
+# use screen -D to keep 'screen' alive but detached so that systemd sees it is running.
+ExecStart=screen -DmS easel /bin/bash ${driverdir}/run.sh
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
@@ -122,11 +139,11 @@ EOF
 
 start() {
     cd ${driverdir}
-    /usr/bin/screen -dmS easel node iris.js
+    chroot --userspec "$(whoami)": / screen -dmS easel ${driverdir}/run.sh
 }
 
 stop() {
-    /usr/bin/screen -X -S "easel" quit
+    chroot --userspec "$(whoami): / /usr/bin/screen -X -S "easel" quit
 }
 
 case "$1" in 
