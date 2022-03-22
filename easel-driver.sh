@@ -8,7 +8,7 @@ mkdir -p easel-driver &&
 cd easel-driver &&
 
 # Download latest Easel Driver for Mac (which we'll extract necessary components from)
-curl -L https://easel.inventables.com/downloads | perl -ne 'print $1 if /href="([^"]+EaselDriver\S+\.pkg[^"]*)/' | xargs curl -o EaselDriver.pkg &&
+curl -L https://easel.inventables.com/downloads | perl -ne 'print $1 if /href="([^"]+EaselDriver\S*\.pkg[^"]*)/' | xargs curl -o EaselDriver.pkg &&
 
 # Install p7zip to unpack xar archive, avrdude for firmware upgrades, screen to run in background
 sudo apt-get install -y p7zip-full avrdude screen &&
