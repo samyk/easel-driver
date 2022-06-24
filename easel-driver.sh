@@ -67,7 +67,7 @@ EOF
 # Install nodejs using nvm
 # The installation script will clone the nvm repository from Github to the ~/.nvm directory 
 # and add the nvm path to your Bash profile.
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash - &&
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash - &&
 
 # Rerun Profile script to start NVM
 if [ ! -e "$NVM_DIR" ]; then
