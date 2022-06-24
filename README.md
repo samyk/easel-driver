@@ -13,7 +13,7 @@ Can be used with X-Carve, Carvey, and other GRBL-based controllers including Ard
 
 Easiest way to get everything installed and running is to run the following:
 
-`curl https://raw.githubusercontent.com/samyk/easel-driver/master/easel-driver.sh | sh -x`
+`curl https://raw.githubusercontent.com/ricktm/easel-driver/master/easel-driver.sh | sh -x`
 
 Easel is now running on ports 1338 (WebSocket) and 1438 (TLS WebSocket).
 
