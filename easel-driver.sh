@@ -47,6 +47,8 @@ perl -pi -e 'if (/callback\(ports\)/) { print << "EOF"
 EOF
 }' lib/serial_port_controller.js &&
 
+# Modify the machine.js to watch for an unknown message received, then trigger a FluidNC connection
+# perl search string is temp
 
 perl -pi -e 'if (/var onUnknownMessage = function(message) {/) { print << "EOF"
                 var onUnknownMessage = function(message) {
