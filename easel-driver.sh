@@ -47,6 +47,21 @@ perl -pi -e 'if (/callback\(ports\)/) { print << "EOF"
 EOF
 }' lib/serial_port_controller.js &&
 
+
+perl -pi -e 'if (/var onUnknownMessage = function(message) {/) { print << "EOF"
+                var onUnknownMessage = function(message) {
+                logger.log("Received Unknown Message (" + message + ")");
+                that.dispatchEvent('unknown', message);
+                if (message.includes('FluidNC') && !isMachineConnected) // quick hack to determine if FluidNC is in use
+                {
+                        logger.log("Sweet! This machine is FluidNC compatable!");
+                        onMachineConnected('Grbl 1.1g [\'$\' for help]'); // this line emulates a board reboot & handshake 
+                 }
+                };
+EOF
+}' lib/machine.js &&
+
+
 # Install nodejs using nvm
 # The installation script will clone the nvm repository from Github to the ~/.nvm directory 
 # and add the nvm path to your Bash profile.
