@@ -53,11 +53,11 @@ EOF
 perl -pi -e 'if (/var onUnknownMessage = function(message) {/) { print << "EOF"
                 var onUnknownMessage = function(message) {
                 logger.log("Received Unknown Message (" + message + ")");
-                that.dispatchEvent('unknown', message);
-                if (message.includes('FluidNC') && !isMachineConnected) // quick hack to determine if FluidNC is in use
+                that.dispatchEvent("unknown", message);
+                if (message.includes("FluidNC") && !isMachineConnected) // quick hack to determine if FluidNC is in use
                 {
                         logger.log("Sweet! This machine is FluidNC compatable!");
-                        onMachineConnected('Grbl 1.1g [\'$\' for help]'); // this line emulates a board reboot & handshake 
+                        onMachineConnected("Grbl 1.1g [\'$\' for help]"); // this line emulates a board reboot & handshake 
                  }
                 };
 EOF
@@ -88,16 +88,16 @@ fi &&
 # Ensure screen also respects the bashrc
 echo 'shell -$SHELL' >> ~/.screenrc &&
 
-# install nodejs v12
-nvm install v12.19.0 &&
-nvm use v12.19.0 &&
+# install nodejs v18
+nvm install v18.4.0 &&
+nvm use v18.4.0 &&
 
 # Install the necessary node modules
 npm install &&
 echo "\n\n\n" &&
 
 # Create a startup script
-#echo '. ~/.bashrc ; . ~/.nvm/nvm.sh ; nvm use' \'v12.19.0\' '; cd ~/easel-driver ; node iris.js' > run.sh &&
+#echo '. ~/.bashrc ; . ~/.nvm/nvm.sh ; nvm use' \'v18.4.0\' '; cd ~/easel-driver ; node iris.js' > run.sh &&
 #chmod 755 run.sh &&
 
 # Allow installing on reboot
@@ -120,7 +120,7 @@ create_start_script() {
 #!/bin/bash
 . ~/.bashrc
 . ~/.nvm/nvm.sh
-nvm use 'v12.19.0'
+nvm use 'v18.4.0'
 cd ${driverdir}
 
 echo "Starting easel-driver"
