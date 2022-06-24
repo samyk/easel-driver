@@ -1,7 +1,7 @@
 # easel-driver w/FluidNC support
 
-Note: This fork adds support for FluidNC grbl controllers. TO add this support, modifications are necessary in both FluidNC's config AND easel's driver. 
-For more information on modifying fluidNC's config, click here.
+Note: This fork adds support for FluidNC grbl controllers.For this support, modifications are necessary in both FluidNC's config AND easel's driver. 
+For more information on modifying FluidNC's config, click here.
 
 
 
