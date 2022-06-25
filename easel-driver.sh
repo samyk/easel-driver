@@ -50,16 +50,10 @@ EOF
 # Modify the machine.js to watch for an unknown message received, then trigger a FluidNC connection
 # perl search string is temp
 
-perl -pi -e 'if (/var onUnknownMessage = function(message) {/) { print << "EOF"
-                var onUnknownMessage = function(message) {
-                logger.log("Received Unknown Message (" + message + ")");
-                that.dispatchEvent("unknown", message);
-                if (message.includes("FluidNC") && !isMachineConnected) // quick hack to determine if FluidNC is in use
-                {
-                        logger.log("Sweet! This machine is FluidNC compatable!");
-                        onMachineConnected("Grbl 1.1g [\'$\' for help]"); // this line emulates a board reboot & handshake 
-                 }
-                };
+perl -pi -e 'if (/that\.dispatchEvent\(.unknown.\, message/) { print << "EOF"
+        if (message.includes("FluidNC") && !isMachineConnected){
+           onMachineConnected("Grbl \x{027}1.1\x{027} ['$' for help]");
+        }
 EOF
 }' lib/machine.js &&
 
