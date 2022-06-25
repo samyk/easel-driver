@@ -1,9 +1,9 @@
 # easel-driver w/FluidNC support
 
-Note: This fork adds support for FluidNC grbl controllers.For this support, modifications are necessary in both FluidNC's config AND easel's driver. 
-For more information on modifying FluidNC's config, click here.
+Note: This fork adds support for FluidNC grbl controllers. For this, modifications are necessary in both FluidNC's config easel's driver. 
+For more information on modifying FluidNC's config, click here (link to come).
 
-
+------------
 
 **UNOFFICIAL** [Easel](https://www.inventables.com/technologies/easel) driver for Linux, Mac, Windows, Raspberry Pi (x86/x86-64/ARM) + ability to run Easel from a remote computer (providing remote access to CNC mill).
 
