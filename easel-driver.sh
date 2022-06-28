@@ -51,8 +51,8 @@ EOF
 # perl search string is temp
 
 perl -pi -e 'if (/that\.dispatchEvent\(.unknown.\, message/) { print << "EOF"
-        if (message.includes("FluidNC") && !isMachineConnected){
-           onMachineConnected("Grbl \x{027}1.1\x{027} [\x{027}$\x{027} for help]");
+        if (message.includes(\x{027}FluidNC\x{027}) && !isMachineConnected){
+           onMachineConnected('Grbl 1.1 [\\\x{027}$\\\x{027} for help]');
         }
 EOF
 }' lib/machine.js &&
