@@ -61,7 +61,7 @@ EOF
 # Install nodejs using nvm
 # The installation script will clone the nvm repository from Github to the ~/.nvm directory 
 # and add the nvm path to your Bash profile.
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash - &&
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash - &&
 
 # Rerun Profile script to start NVM
 if [ ! -e "$NVM_DIR" ]; then
@@ -83,8 +83,8 @@ fi &&
 echo 'shell -$SHELL' >> ~/.screenrc &&
 
 # install nodejs v18
-nvm install v18.4.0 &&
-nvm use v18.4.0 &&
+nvm install v12.19.0 &&
+nvm use v12.19.0 &&
 
 # Install the necessary node modules
 npm install &&
@@ -114,7 +114,7 @@ create_start_script() {
 #!/bin/bash
 . ~/.bashrc
 . ~/.nvm/nvm.sh
-nvm use 'v18.4.0'
+nvm use 'v12.19.0'
 cd ${driverdir}
 
 echo "Starting easel-driver"
