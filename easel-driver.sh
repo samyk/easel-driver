@@ -52,7 +52,7 @@ EOF
 
 perl -pi -e 'if (/that\.dispatchEvent\(.unknown.\, message/) { print << "EOF"
         if (message.includes("FluidNC") && !isMachineConnected){
-           onMachineConnected("Grbl \x{027}1.1\x{027} ['$' for help]");
+           onMachineConnected("Grbl \x{027}1.1\x{027} [\x{027}$\x{027} for help]");
         }
 EOF
 }' lib/machine.js &&
