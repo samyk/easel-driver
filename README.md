@@ -45,10 +45,8 @@ netsh interface portproxy add v4tov4 listenport=1438 listenaddress=0.0.0.0 conne
 
 ## Start on boot
 
-The shell script asks you if you want to run on boot, and if so, it will add it to your crontab. If you didn't add it initially and want to now, you can add it like so:
+The shell script asks you if you want to run on boot, and if so, it will add it to systemd. If you later want to disable the driver, you can run
 
 ```sh
-(crontab -l ; echo "@reboot cd ~/easel-driver && /usr/bin/screen -dmS easel node iris.js") | crontab
+sudo systemctl disable EaselDriver.service
 ```
-
-Ensure that iris.js is actually in ~/easel-driver, and if not, make sure to change the `cd` directory. You must cd into the directory and not just run iris.js from the directory as iris.js uses relative paths.
