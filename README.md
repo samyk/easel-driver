@@ -29,12 +29,12 @@ If you want to run your CNC on a separate computer than the one you run Easel fr
 
 **macOS/Linux**
 ```sh
-# You can first install MacPorts from https://guide.macports.org/#installing.macports
-# ncat is installed via nmap, I personally installed nmap via MacPorts by running
-sudo port install nmap
+# Forward local 1438 to remote host raspberrypi.local:1438 - change raspberrypi.local to your controller's IP/hostname
+# The -fNT option causes ssh to go into the background without allocating a terminal.
+ssh -fNT -L 1438:localhost:1438 raspberrypi.local
 
-# Now port forward local 1438 to remote host raspberrypi.local:1438 - may need to adjust raspberrypi.local to your controller's IP/hostname
-ncat --sh-exec "ncat raspberrypi.local 1438" -l 1438 --keep-open
+# If you like seeing lots of output from your controller, you could try this instead:
+# ssh -t -L 1438:localhost:1438 raspberrypi.local screen -r
 ```
 
 **Windows**
