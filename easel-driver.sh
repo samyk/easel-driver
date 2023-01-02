@@ -32,16 +32,31 @@ ln -s lib/etc etc &&
 # Modify the firmware uploader to support Linux
 perl -pi -e 'if (/var PLATFORMS/) { $x = chr(39); print; $_ = "\t${x}Linux${x}: {\n\t\troot: ${x}/usr/bin/avrdude${x},\n\t\texecutable: ${x}/usr/bin/avrdude${x},\n\t\tconfig: path.join(__dirname, ${x}etc/avrdude.conf${x})\n\t},\n"; }' lib/firmware_uploader.js &&
 
-# Modify the serial port code to support CH340/CH341-based serial devices by spoofing an FTDI chip
+# Modify the serial port code to support CP210x/CH340/CH341-based serial devices by spoofing an FTDI chip
 perl -pi -e 'if (/callback\(ports\)/) { print << "EOF"
         ports.forEach(function(part, i) {
           if (this[i].manufacturer === "1a86")
             this[i].manufacturer = "FTDI";
+          if (this[i].manufacturer === "Silicon Labs")
+            this[i].manufacturer = "FTDI";
           if (this[i].vendorId === "1a86")
             this[i].vendorId = "0403";
+           if (this[i].vendorId === "10c4")
+            this[i].vendorId = "0403";           
         }, ports);
 EOF
 }' lib/serial_port_controller.js &&
+
+# Modify the machine.js to watch for an unknown message received, then trigger a FluidNC connection
+# perl search string is temp
+
+perl -pi -e 'if (/that\.dispatchEvent\(.unknown.\, message/) { print << "EOF"
+        if (message.includes(\x{027}FluidNC\x{027}) && !isMachineConnected){
+           onMachineConnected(\x{027}Grbl 1.1g [\\\x{027}\$\\\x{027} for help]\x{027});
+        }
+EOF
+}' lib/machine.js &&
+
 
 # Install nodejs using nvm
 # The installation script will clone the nvm repository from Github to the ~/.nvm directory 
@@ -67,7 +82,7 @@ fi &&
 # Ensure screen also respects the bashrc
 echo 'shell -$SHELL' >> ~/.screenrc &&
 
-# install nodejs v12
+# install nodejs v18
 nvm install v12.19.0 &&
 nvm use v12.19.0 &&
 
@@ -76,7 +91,7 @@ npm install &&
 echo "\n\n\n" &&
 
 # Create a startup script
-#echo '. ~/.bashrc ; . ~/.nvm/nvm.sh ; nvm use' \'v12.19.0\' '; cd ~/easel-driver ; node iris.js' > run.sh &&
+#echo '. ~/.bashrc ; . ~/.nvm/nvm.sh ; nvm use' \'v18.4.0\' '; cd ~/easel-driver ; node iris.js' > run.sh &&
 #chmod 755 run.sh &&
 
 # Allow installing on reboot
