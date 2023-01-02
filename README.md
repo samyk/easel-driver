@@ -1,19 +1,14 @@
-# easel-driver w/FluidNC support
-
-Note: This fork adds support for FluidNC grbl controllers. For this, modifications are necessary in both FluidNC's config easel's driver. 
-For more information on modifying FluidNC's config, click here (link to come).
-
-------------
+# easel-driver (GRBL + gCarvin + FluidNC support)
 
 **UNOFFICIAL** [Easel](https://www.inventables.com/technologies/easel) driver for Linux, Mac, Windows, Raspberry Pi (x86/x86-64/ARM) + ability to run Easel from a remote computer (providing remote access to CNC mill).
 
-Can be used with X-Carve, Carvey, and other GRBL-based controllers including Arduino, FTDI, and CH340/CH341-based controllers (though it might void your [warranty](http://carvey-instructions.inventables.com/warranty/CarveyLimitedWarranty11.18.16.pdf))
+Can be used with X-Carve, Carvey, and other GRBL/gCarvin/FluidNC-based controllers including Arduino, FTDI, and CH340/CH341-based controllers (though it might void your [warranty](http://carvey-instructions.inventables.com/warranty/CarveyLimitedWarranty11.18.16.pdf))
 
 ## Quick Start
 
 Easiest way to get everything installed and running is to run the following:
 
-`curl https://raw.githubusercontent.com/ricktm/easel-driver/master/easel-driver.sh | sh -x`
+`curl https://raw.githubusercontent.com/samyk/easel-driver/master/easel-driver.sh | sh -x`
 
 Easel is now running on ports 1338 (WebSocket) and 1438 (TLS WebSocket).
 
