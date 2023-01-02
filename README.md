@@ -2,7 +2,7 @@
 
 **UNOFFICIAL** [Easel](https://www.inventables.com/technologies/easel) driver for Linux, Mac, Windows, Raspberry Pi (x86/x86-64/ARM) + ability to run Easel from a remote computer (providing remote access to CNC mill).
 
-Can be used with X-Carve, Carvey, and other GRBL/gCarvin/FluidNC-based controllers including Arduino, FTDI, and CH340/CH341-based controllers (though it might void your [warranty](http://carvey-instructions.inventables.com/warranty/CarveyLimitedWarranty11.18.16.pdf))
+Can be used with X-Carve, Carvey, and other GRBL/gCarvin/FluidNC-based controllers including Arduino, FTDI, and CP210x/CH34x-based controllers (though it might void your [warranty](http://carvey-instructions.inventables.com/warranty/CarveyLimitedWarranty11.18.16.pdf))
 
 ## Quick Start
 
@@ -29,7 +29,7 @@ If you want to run your CNC on a separate computer than the one you run Easel fr
 
 **macOS/Linux**
 ```sh
-# You can first install MacPorts from https://guide.macports.org/#installing.macports
+# on macOS, you can first install MacPorts from https://guide.macports.org/#installing.macports
 # ncat is installed via nmap, I personally installed nmap via MacPorts by running
 sudo port install nmap
 
