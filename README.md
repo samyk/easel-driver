@@ -1,4 +1,4 @@
-# easel-driver (GRBL + gCarvin + FluidNC support)
+# easel-driver for Linux/macOS/RPi/Windows + GRBL/gCarvin/FluidNC/clones + ARM/x86/more + FTDI/USB/clones
 
 **UNOFFICIAL** [Easel](https://www.inventables.com/technologies/easel) driver for Linux, Mac, Windows, Raspberry Pi (x86/x86-64/ARM) + ability to run Easel from a remote computer (providing remote access to CNC mill).
 
