@@ -33,7 +33,7 @@ ln -s lib/etc etc &&
 perl -pi -e 'if (/var PLATFORMS/) { $x = chr(39); print; $_ = "\t${x}Linux${x}: {\n\t\troot: ${x}/usr/bin/avrdude${x},\n\t\texecutable: ${x}/usr/bin/avrdude${x},\n\t\tconfig: path.join(__dirname, ${x}etc/avrdude.conf${x})\n\t},\n"; }' lib/firmware_uploader.js &&
 
 # Modify the serial port code to support CP210x/CH340/CH341-based serial devices by spoofing an FTDI chip
-perl -pi -e 'if (/callback\(ports\.map\(function\(port\)/) { print << "EOF"
+perl -pi -e 'if (/callback\(ports/) { print << "EOF"
         ports.forEach(function(part, i) {
           if (this[i].manufacturer === "1a86")
             this[i].manufacturer = "FTDI";
