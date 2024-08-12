@@ -83,8 +83,8 @@ fi &&
 echo 'shell -$SHELL' >> ~/.screenrc &&
 
 # install nodejs v18
-nvm install v12.19.0 &&
-nvm use v12.19.0 &&
+nvm install v18.20.4 &&
+nvm use v18.20.4 &&
 
 # Install the necessary node modules
 npm install &&
@@ -113,8 +113,8 @@ create_start_script() {
         cat <<EOF > run.sh
 #!/bin/bash
 . ~/.bashrc
-. ~/.nvm/nvm.sh
-nvm use 'v12.19.0'
+. ${NVM_DIR}/nvm.sh
+nvm use 'v18.20.4'
 cd ${driverdir}
 
 echo "Starting easel-driver"
